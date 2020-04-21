@@ -6,7 +6,7 @@ const request = require('request-promise-native'); // use Request library + prom
 http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end('Hello World\n');
-}).listen(8081, '192.168.1.134');
+}).listen(8081, '192.168.1.253');
 console.log('Server running at http://192.168.0.9:8081/');
 
 
@@ -17,5 +17,5 @@ router.post("/" , async (req, res) => {
   const id = req.body.hello1;
   
   console.log(date);
-  consol.log(id);
+  console.log(id);
 });
