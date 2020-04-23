@@ -17,10 +17,13 @@ const fs = require('fs');
 const readline = require('readline');
 
 //article classification
-const rencaiyizhan = './article_rencaiyizhan';
+const huodongfabu = './article_huodongfabu';
 const zhengcewenjian = './article_zhengcewenjian'
-
-
+const dongtaixinxi = './article_dongtaixinxi'
+const xuqiuxinxi = './article_xuqiuxinxi'
+const chanyepingtai = './article_chanyepingtai'
+const jujiafuwu = './article_jujiafuwu'
+const banshizhinan = './article_banshizhinan'
 app.use(express.urlencoded());
 app.use(express.json());
 
@@ -43,6 +46,8 @@ app.post("/" ,async (req, res) => {
 	var pagenumber = req.body.pagenumber;
 	var tabselection = req.body.tabselection;
 	
+	console.log(tabselection)
+	
 	if(!pagenumber && !tabselection)
 	{
 		res.send("");
@@ -50,30 +55,42 @@ app.post("/" ,async (req, res) => {
 	else
 	{
 		switch(tabselection) {
-		  case "rencaiyizhan":
+		  case "dongtaixingxi":
 			// code block
-			tabselection = rencaiyizhan;
+			tabselection = dongtaixinxi;
 			break;
 		  case "zhengcewenjian":
 			// code block
 			tabselection = zhengcewenjian;
+			break;
+		
+		  case "xuqiuxinxi":
+		    tabselection = xuqiuxinxi;
+			break;
+		  case "chanyepingtai":
+		    tabselection = chanyepingtai;
+			break;
+			
+		  case "banshizhinan":
+		    tabselection = banshizhinan;
+			break;
+		   case "huodongfabu":
+		    tabselection = huodongfabu;
+			break;
+		   case "jujiafuwu":
+		   tabselection = jujiafuwu;
 			break;
 		  default:
 			// code block
 			tabselection = rencaiyizhan;
 		}
 		
-		//var tabselection = rencaiyizhan; //please make switch statement here
 		var filecount;
 		var latestfile;
 		var numofarticletodisplay = 6;
 		var wordstoread = 800; //800 bytes please do conversion here later; only need to store 800 byte (800 character for chinese it is 2/bytes per chinese character 400 words)
 		var outarry = [];
 		
-		
-
-		console.log(pagenumber);
-		console.log(tabselection);
 		
 		//read the number of files in that directory
 		await fs.readdir(tabselection, async (err, files) => {
@@ -95,7 +112,6 @@ app.post("/" ,async (req, res) => {
 				 const promise2 = promise.then(function(result)
 				 {
 					 //return here
-					 console.log(outarry);
 					 res.send(outarry);
 				 }
 				 
