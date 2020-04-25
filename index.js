@@ -17,15 +17,175 @@ const fs = require('fs');
 const readline = require('readline');
 
 //article classification
-const huodongfabu = './article_huodongfabu';
-const zhengcewenjian = './article_zhengcewenjian'
-const dongtaixinxi = './article_dongtaixinxi'
-const xuqiuxinxi = './article_xuqiuxinxi'
-const chanyepingtai = './article_chanyepingtai'
-const jujiafuwu = './article_jujiafuwu'
-const banshizhinan = './article_banshizhinan'
+const huodongfabu = './articles/article_huodongfabu';
+const zhengcewenjian = './articles/article_zhengcewenjian'
+const dongtaixinxi = './articles/article_dongtaixinxi'
+const xuqiuxinxi = './articles/article_xuqiuxinxi'
+const chanyepingtai = './articles/article_chanyepingtai'
+const jujiafuwu = './articles/article_jujiafuwu'
+const banshizhinan = './articles/article_banshizhinan'
+
+
+
+const source = './articles/'
+
 app.use(express.urlencoded());
 app.use(express.json());
+
+
+//populate title in the 
+app.post("/main", (req, res) => {
+	
+	//need to get page number from here page should start from 0
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+
+	//loop through each article directory
+	var listofdir = getDirectories(source);
+	var outarry = [];
+	
+	main_dirhandler(listofdir,res);
+	
+	
+	console.log("too fast again");
+	console.log(outarry);
+
+});
+
+
+function main_dirhandler(listofdir,res)
+{
+    var outarry = new Array(7);
+	var count = 0;
+	//synchronous action here should be fine
+	listofdir.forEach(async function(value){
+		var filecount;
+		var loopcount = 5;
+		console.log("what value" + value);
+				
+		try{
+				 const promise = main_readdir(loopcount,count,value, outarry);
+				 const promise2 = promise.then(function(result)
+				 {
+					 //return here
+					 console.log("what is dat result");
+					 console.log(result);
+					// console.log("passing here " + outarry);
+					if(result[1] == 6)
+					{
+						res.send(result[0]);
+						
+					}
+				
+				 }
+				 
+				 ,function(error) 
+				 
+				 {
+					 console.log("no");
+					 
+					 
+				 });
+				 
+				 
+				
+				
+				}
+				catch{
+					console.log("something is wrnog");
+				}
+	
+				
+		count=count+1;		
+		
+	});
+	
+		
+	
+	return outarry;
+}
+
+ function main_readdir(loopcount,loopnumber, value, outarry)
+{
+		return new Promise(async(resolve,reject) => {
+			
+		//read the number of files in that directory
+		await fs.readdir(source + value,  async (err, files) => {
+			
+			try{
+				//please handle error
+				filecount = files.length;
+					
+				
+				
+				var tmp = await main_parseandcreatejsonarry(filecount, loopcount, source + value);
+				
+				console.log("too fast bro");
+				console.log("whati s the value" + value);
+				outarry[loopnumber] =tmp;
+				resolve([outarry,loopnumber]);
+			}
+			catch
+			{
+				reject("");
+				
+			}
+			
+
+		});			
+			
+			
+			
+		});		
+
+				
+	
+}
+
+function main_parseandcreatejsonarry(filecount, loopcount, infile)
+{
+			var filecounttmp = filecount /2;
+			var innerarry = [];
+			if(filecounttmp < loopcount)
+			{
+				loopcount = filecounttmp;
+				
+			}
+			
+			for(var i = filecounttmp;i > (filecounttmp - loopcount);i--)
+			{
+				var file = infile + '/' + i.toString() + '.json';
+				var file_content = fs.readFileSync(file);
+				var json = JSON.parse(file_content);
+				
+				let obj = {
+					"Title": json.title,
+					"date": json.date,
+				}
+				
+				innerarry.push(obj);
+				
+			}
+			
+			console.log("inner array is" + innerarry);
+			return innerarry;
+	
+}
+
+
+
+const getDirectories = source =>
+	fs.readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
+
 
 //article post should perform IO operation here to read file
 app.post("/" ,async (req, res) => {
@@ -216,7 +376,7 @@ function parsefileandcreatejson(fd,b,json,wordstoread)
 
 
 
-app.listen(8081, '192.168.1.253', function()
+app.listen(8081, 'localhost', function()
 {
 	//console.log("... port %d in %s mode", app.address().port, app.settings.env);
 	
