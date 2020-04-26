@@ -36,6 +36,8 @@ app.use(express.json());
 //populate title in the 
 app.post("/main", (req, res) => {
 	
+
+	
 	//need to get page number from here page should start from 0
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -60,8 +62,16 @@ app.post("/main", (req, res) => {
 });
 
 
+
+
+
 function main_dirhandler(listofdir,res)
 {
+	
+
+  
+
+	
     var outarry = new Array(7);
 	var count = 0;
 	//synchronous action here should be fine
@@ -190,6 +200,7 @@ const getDirectories = source =>
 //article post should perform IO operation here to read file
 app.post("/" ,async (req, res) => {
 	
+
 	//need to get page number from here page should start from 0
        // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
