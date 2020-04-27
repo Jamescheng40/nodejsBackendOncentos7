@@ -32,6 +32,55 @@ const source = './articles/'
 app.use(express.urlencoded());
 app.use(express.json());
 
+//allow origin need to be changed to desitnation content
+app.post("/article", async (req,res) => {
+		
+	//need to get page number from here page should start from 0
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+	
+	//get the article number and tabselection
+	var filenumber = req.body.number;
+	var tabselection = req.body.tabselection;
+	
+	if(filenumber == "undefined" && tabselection == "undefined")
+	{
+		res.send("");
+	}
+	else
+	{
+		//linux dependent area
+		var path = source + 'article_' + tabselection + '/' + filenumber.toString() + '.content';
+					//linux dependent area
+					console.log(tabselection);
+					var file = source + 'article_' + tabselection + '/' + filenumber.toString() + '.json';
+					var file_content = fs.readFileSync(file);
+					var json = JSON.parse(file_content);
+					let obj = {
+					"Title": json.title,
+					"author": json.author,
+					"date": json.date,
+					"content": ""
+					}
+					fs.readFile(path, function (err, data ) {
+					
+					obj["content"] = data.toString();
+					res.send(obj);
+					});
+		
+	}
+	
+	
+});
+
+
 
 //populate title in the 
 app.post("/main", (req, res) => {
