@@ -19,7 +19,7 @@ const readline = require('readline');
 //article classification
 const huodongfabu = './articles/article_huodongfabu';
 const zhengcewenjian = './articles/article_zhengcewenjian'
-const dongtaixinxi = './articles/article_dongtaixinxi'
+const dongtaixinxi = './articles/article_dongtaixingxi'
 const xuqiuxinxi = './articles/article_xuqiuxinxi'
 const chanyepingtai = './articles/article_chanyepingtai'
 const jujiafuwu = './articles/article_jujiafuwu'
